@@ -20,14 +20,9 @@ done(State) :-
     intersection(Goals, State, Goals).
 
 door(den, kitchen).
-% door(hall, bathroom(guest)).
-door(hall, den).
-door(bedroom, hall).
+door(bedroom, den).
 door(bedroom, bathroom(master)).
 door(bathroom(master), closet).
-% door(den, entrance).
-% door(entrance, frontyard).
-% door(frontyard, car).
 
 connected_to(A,B) :- door(A,B).
 connected_to(A,B) :- door(B,A).
