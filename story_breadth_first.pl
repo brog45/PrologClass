@@ -7,15 +7,17 @@ init(State) :-
             , hands(dirty)
             , dressed_for(bed)
             , object_in(keys, kitchen)
+            , goal(player_in(kitchen))
+            , goal(stomach(full))
+            , goal(bladder(empty))
+            , goal(holding(keys))
+            , goal(dressed_for(work))
             , history([])
             ].
 
 done(State) :-
-    member(player_in(kitchen), State),
-    member(stomach(full), State),
-    member(bladder(empty), State),
-    member(holding(keys), State),
-    member(dressed_for(work), State).
+    findall(G, member(goal(G), State), Goals),
+    intersection(Goals, State, Goals).
 
 door(den, kitchen).
 % door(hall, bathroom(guest)).
