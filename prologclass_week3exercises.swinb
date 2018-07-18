@@ -1,0 +1,291 @@
+<div class="notebook">
+
+<div class="nb-cell markdown" name="md1">
+# Lists Exercises
+
+Work the exercises and save as a new SWISH notebook. Save the URL for that notebook to turn in.
+
+## list_sum/2
+
+Make a predicate =|list_sum/2|= that sums a list of numbers, in the program box below
+</div>
+
+<div class="nb-cell program" name="p1">
+%!      list_sum(+List:list_of_numbers, -Sum:int) is det
+%
+%    Succeeds if Sum is the sum of the numbers in List
+%    
+%    @arg List a list of numbers
+%    @arg Sum their sum
+%
+list_sum([], 0).
+list_sum([Head|Tail], Sum) :-
+    is_list(Head),
+    list_sum(Head, 0, Accumulator),
+    list_sum(Tail, Accumulator, Sum).
+list_sum([Head|Tail], Sum) :-
+    \+ is_list(Head),
+    list_sum(Tail, Head, Sum).
+list_sum([], Accumulator, Accumulator).
+list_sum([Head|Tail], Accumulator, Sum) :-
+    is_list(Head),
+    list_sum(Head, Accumulator, NextAccumulator),
+    list_sum(Tail, NextAccumulator, Sum).
+list_sum([Head|Tail], Accumulator, Sum) :-
+    number(Head),
+    NextAccumulator is Accumulator + Head,
+    list_sum(Tail, NextAccumulator, Sum).
+
+</div>
+
+<div class="nb-cell query" name="q2">
+list_sum([1,2,3], S).
+</div>
+
+<div class="nb-cell query" name="q3">
+list_sum([17], S).
+</div>
+
+<div class="nb-cell markdown" name="md2">
+What should your version do with this?
+</div>
+
+<div class="nb-cell query" name="q1">
+list_sum([], S).
+</div>
+
+<div class="nb-cell markdown" name="md6">
+How about this?   (throw exception might be a reasonable answer. We haven't covered them yet).
+</div>
+
+<div class="nb-cell query" name="q6">
+list_sum([1,b, c(7)], S).
+</div>
+
+<div class="nb-cell markdown" name="md7">
+and this?
+
+Treating as above is reasonable. Another reasonable answer is 'sum the sub-lists'. At some point you have to shrug and say YAGNI, but this sort of opportunity to be _better_ is around every corner in Prolog.
+</div>
+
+<div class="nb-cell query" name="q7">
+list_sum([[1,2,5], [5,8,1]], S).
+</div>
+
+<div class="nb-cell markdown" name="md3">
+The sum of a list is definitely a single number. There are no alternate solutions, and best practice would be for this predicate to *not* leave choice points.
+The next query will show all solutions (set using the wrench if you're interested). It should only show one.
+</div>
+
+<div class="nb-cell query" data-chunk="99" name="q4">
+list_sum([1,6,6,78,2,55], S).
+</div>
+
+<div class="nb-cell markdown" name="md4">
+In some circumstances it might be nice to generate lists whose members sum to a known value.
+
+Make a principled decision what this query should do, and make your =|list_sum/2|= do that. Now, one decision could be 'you get what you get'. This is actually *reasonable* in some cases - you documented it as "don't do this".
+
+Prolog returns proofs *one at a time*. Proof order is important in practice.
+</div>
+
+<div class="nb-cell query" name="q5">
+list_sum(List, 4).
+</div>
+
+<div class="nb-cell markdown" name="md5">
+## Extract the N-th element
+
+Write this predicate.
+</div>
+
+<div class="nb-cell program" name="p2">
+%!   nth_in_list(+List:list, +Index:integer, -Value:term) is semidet
+%
+%   extract the 0 based Index'th element of List
+%   This predicate requires Index is an integer greater than or equal 
+%   to 0 and less than the length of List; otherwise, it fails. 
+%   
+%   @arg List    list to extract element from
+%   @arg Index   index - 0 is first element
+%   @arg Value   will be bound to the Index'th element on return
+%
+nth_in_list([Head|_], 0, Head) :- !.
+nth_in_list([_|Tail], N, Value) :-
+    N1 is N - 1,
+    nth_in_list(Tail, N1, Value).
+
+</div>
+
+<div class="nb-cell markdown" name="md8">
+Make your =|nth_in_list/3|= happy with all these queries.
+</div>
+
+<div class="nb-cell query" name="q8">
+nth_in_list([a,b,c], 0, a).
+</div>
+
+<div class="nb-cell query" name="q9">
+nth_in_list([a,b,c],2,c).
+</div>
+
+<div class="nb-cell markdown" name="md9">
+What should we do with this? Fail? Use last element? Throw? Probably most important, add to the header comment an explanation of what you do.
+</div>
+
+<div class="nb-cell query" name="q10">
+nth_in_list([a,b,c],7,X).
+</div>
+
+<div class="nb-cell query" name="q11">
+nth_in_list([], 0, X).
+</div>
+
+<div class="nb-cell query" name="q12">
+nth_in_list(X, 2, 4).
+</div>
+
+<div class="nb-cell query" name="q13">
+nth_in_list([a,b,c], -1, X).
+</div>
+
+<div class="nb-cell query" name="q14">
+nth_in_list([], -1, X).
+</div>
+
+<div class="nb-cell query" name="q15">
+nth_in_list(tacos, "Rama Lama Ding Dong", 7).
+</div>
+
+<div class="nb-cell query" name="q16">
+nth_in_list(`I have such great students`, 8, X).
+</div>
+
+<div class="nb-cell markdown" name="md10">
+## Category Exercise
+
+Here's some data that puts things in (disjoint) categories.
+</div>
+
+<div class="nb-cell program" data-background="true" name="p3">
+person(X) :- member(X, [
+                       alice,
+                       bob,
+                       charlene,
+                       derek,
+                       ethyl,
+                       faye,
+                       gilam,
+                       harvey
+                       ]).
+household(X) :- member(X, [
+                          phone,
+                          sheet,
+                          bed,
+                          chair,
+                          cup]).
+industry(X) :- member(X, [
+                         factory,
+                         laboratory,
+                         machine_shop,
+                         foundry
+                         ]).
+</div>
+
+<div class="nb-cell markdown" name="md11">
+Here's a sample list of things.
+</div>
+
+<div class="nb-cell program" data-background="true" name="p4">
+mixed_stuff([ethyl, tacos, charlene, factory,
+              phone, sheet, harvey]).
+</div>
+
+<div class="nb-cell markdown" name="md12">
+write a predicate below that maps a list into another list where every element is the appropriate one of these atoms:
+ * person
+ * household
+ * industry
+ * none
+ 
+Make it work in all modes!
+
+hints: it's ok to use library calls. You'll probably want to write helper predicates.
+</div>
+
+<div class="nb-cell program" name="p5">
+%!   stuff_category(?Stuff:list_of_stuff, ?Cat:list_of_categories) is nondet
+%
+%    @arg Stuff a list of atoms
+%    @arg Cat a list of what category the element is in
+%
+</div>
+
+<div class="nb-cell markdown" name="md13">
+and make all these do something reasonable.
+</div>
+
+<div class="nb-cell query" name="q17">
+stuff_category([], []).
+</div>
+
+<div class="nb-cell query" name="q18">
+stuff_category([ethyl, cup, yesterday, factory], [person, household, none, industry]).
+</div>
+
+<div class="nb-cell query" name="q19">
+stuff_category(Stuff, [person, person, industry]).
+</div>
+
+<div class="nb-cell query" name="q20">
+stuff_category([S1, phone, S2], [person, household, Cat1]).
+</div>
+
+<div class="nb-cell markdown" name="md14">
+## Filter
+
+In the last problem you probably wrote code that traversed a pair of lists, operating pairwise on the elements. In functional programming such an operation would be a _map_.
+
+It would be convenient to not need to write the actual map part each time, and indeed the library pred =|maplist/3|= does exactly this, passing the *functor* of the goal as the first argument.
+
+You can write your own such *metapredicates* in Prolog.
+
+Write a predicate =|filter/3|= that includes all the elements of a list for which a goal succeeds. (note this is available in the library as included/3 - please don't just call included/3).
+
+hint: you will need the =|call/2|= convenience predicate to add an argument to Goal for you. 
+You could use =|call/1|= and *univ* but using =|call/2|= will give the added benefit that your version of filter works with static arguments. (you certainly could write your own =|call/n|= using =|call/1|= and *univ*.)
+
+Say you want to find all the elements greater than 14. Rather than make a special greater_than_14, you can do =|include('&lt;'(14), In, Out)|=. =|include/3|= will call =|'&lt;
+'(14, X)|= with X bound to each element in turn.
+
+second hint: _Goal_ might be nondet.
+
+There *is* a wrinkle in this - SWISH works by shipping your code to the server it's running on (using the nifty Pengines system) and running it there. Obviously accepting random code from the internet and running it is *bad security*, so it's run in a _sandbox_ that limits what you can do.
+
+=|call/n|=, for obvious reasons, would be an easy way around the sandbox. So it's prohibited. You'll need to actually run this on your desktop and paste your answer in here (sorry! realized after the fact).
+</div>
+
+<div class="nb-cell program" name="p6">
+%!     filter(:Goal:callable, +List:list, -Filtered:list) is det
+%
+%    Succeeds if the last argument is a list of those elements
+%    of the second argument for which the first argument
+%    succeeds at least once
+%    
+%    @arg Goal  the goal to test with an added arg
+%    @arg List  the input list
+%    @arg Filtered those elements of List for which Goal succeeds
+%
+</div>
+
+<div class="nb-cell markdown" name="md15">
+# Completing the assignment
+
+Save this (I believe you'll have to 'fork' it), and copy the URL. (You probably want to keep this URL for yourself).
+
+In Moodle, the section 'Turn in Week 3 Exercises Here' gives you a chance to submit a styled text document. Provide the URL in this document to complete the assignment.
+
+(If some JS/PHP programmer among us wants to contribute to an OS project, expanding the moodle 'assignment' item to include 'submit a URL', they need one).
+</div>
+
+</div>
