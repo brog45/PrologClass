@@ -7,7 +7,9 @@ init(State) :-
             , hands(clean)
             , dressed_for(bed)
             , object_in(keys, bedroom)
-            , goal(player_in(car))
+            , object_in(comb, bathroom(master))
+            % , goal(player_in(car))
+            , goal(player_in(kitchen))
             , goal(stomach(full))
             , goal(bladder(empty))
             , goal(holding(keys))
@@ -19,11 +21,11 @@ done(State) :-
     findall(G, member(goal(G), State), Goals),
     intersection(Goals, State, Goals).
 
-door(yard, car).
-door(den, yard).
+% door(yard, car).
+% door(den, yard).
 door(den, kitchen).
 door(hall, den).
-door(hall, bathroom(guest)).
+% door(hall, bathroom(guest)).
 door(bedroom, hall).
 door(bedroom, bathroom(master)).
 door(bathroom(master), closet).
@@ -74,11 +76,25 @@ action(StateIn, StateOut, 'Eat~n'-[]) :-
     \+ member(holding(_), StateIn),
     select(stomach(empty), StateIn, stomach(full), StateOut).
 
+
+% % This is faster than the data-driven approach below
+% % grab object
+% action(StateIn, StateOut, 'Grab ~w~n'-[Object]) :-
+%     member(player_in(Location), StateIn),
+%     \+ member(holding(_), StateIn),
+%     select(object_in(Object, Location), StateIn, holding(Object), StateOut).
+
+
 % grab object
 action(StateIn, StateOut, 'Grab ~w~n'-[Object]) :-
-    member(player_in(Location), StateIn),
-    \+ member(holding(_), StateIn),
-    select(object_in(Object, Location), StateIn, holding(Object), StateOut).
+    PreReqs = [player_in(Location), object_in(Object, Location)],
+    NegPreReqs = [holding(_)],
+    Removes = [object_in(Object, Location)],
+    Adds = [holding(Object)],
+    subtract(StateIn, NegPreReqs, StateIn),
+    intersection(PreReqs, StateIn, PreReqs),
+    subtract(StateIn, Removes, S0),
+    append(S0, Adds, StateOut).
 
 % move from room to room
 action(StateIn, StateOut, 'Move from ~w to ~w~n'-[CurrentLocation, Location]) :-
@@ -115,10 +131,10 @@ process_queue([HeadState|TailStates], ClosedList, StateOut) :-
 
 % take an action; check its outcome against the closed list; and add its description to the history
 take_action(StateIn, ClosedList, StateOut) :-
-        action(StateIn, S0, Description),
-        delete(S0, history(_), S1),
-        \+ member(S1, ClosedList),
-        log(S0, Description, StateOut).
+    action(StateIn, S0, Description),
+    delete(S0, history(_), S1),
+    \+ member(S1, ClosedList),
+    log(S0, Description, StateOut).
     
 close_state(ClosedListIn, State, ClosedListOut) :-
     delete(State, history(_), State0),
