@@ -96,7 +96,7 @@ go :-
     !,
     process_queue([State], [], StateOut),
     !,
-    member(history(H), StateOut),
+    memberchk(history(H), StateOut),
     print_history(H).
 
 % process_queue(L, _) :-
