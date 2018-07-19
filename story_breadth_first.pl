@@ -33,11 +33,6 @@ log(State, Format-Values, State0) :-
     append(History, [Format-Values], History0),
     select(history(History), State, history(History0), State0).
 
-% take an action and add its description to the history
-logged_action(StateIn, StateOut) :-
-    action(StateIn, S0, Description),
-    log(S0, Description, StateOut).
-    
 print_history([]).
 print_history([Format-Values|Tail]) :-
     format(Format, Values),
@@ -93,7 +88,7 @@ action(StateIn, StateOut, 'Drop ~w~n'-[Object]) :-
 go :-
     init(State),
     !,
-    process_queue([State], StateOut),
+    process_queue([State], [], StateOut),
     !,
     member(history(H), StateOut),
     print_history(H).
@@ -102,11 +97,23 @@ go :-
 %     length(L, N),
 %     format('Queue depth ~d~n', N),
 %     fail.
-process_queue([HeadState|_], StateOut) :-
+process_queue([HeadState|_], _, StateOut) :-
     done(HeadState),
     !,
     log(HeadState, 'Done!~n'-[], StateOut).
-process_queue([HeadState|TailStates], StateOut) :-
-    findall(S1, logged_action(HeadState,S1), States),
+process_queue([HeadState|TailStates], ClosedList, StateOut) :-
+    findall(S, take_action(HeadState, ClosedList, S), States),
     append(TailStates, States, Queue),
-    process_queue(Queue, StateOut).
+    close_state(ClosedList, HeadState, ClosedList0),
+    process_queue(Queue, ClosedList0, StateOut).
+
+% take an action; check its outcome against the closed list; and add its description to the history
+take_action(StateIn, ClosedList, StateOut) :-
+        action(StateIn, S0, Description),
+        delete(S0, history(_), S1),
+        \+ member(S1, ClosedList),
+        log(S0, Description, StateOut).
+    
+close_state(ClosedListIn, State, ClosedListOut) :-
+    delete(State, history(_), State0),
+    append(ClosedListIn, [State0], ClosedListOut).
