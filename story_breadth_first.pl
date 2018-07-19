@@ -4,9 +4,9 @@ init(State) :-
     State = [ player_in(bedroom)
             , stomach(empty)
             , bladder(full)
-            , hands(dirty)
+            , hands(clean)
             , dressed_for(bed)
-            , object_in(keys, kitchen)
+            , object_in(keys, bedroom)
             , goal(player_in(car))
             , goal(stomach(full))
             , goal(bladder(empty))
@@ -46,11 +46,13 @@ print_history([Format-Values|Tail]) :-
 action(StateIn, StateOut, 'Pee~n'-[]) :-
     member(player_in(bathroom(_)), StateIn),
     select(bladder(full), StateIn, bladder(empty), State0),
+    \+ member(holding(_), StateIn),
     select(hands(_), State0, hands(dirty), StateOut).
 
 % wash hands in the bathroom
 action(StateIn, StateOut, 'Wash hands~n'-[]) :-
     member(player_in(bathroom(_)), StateIn),
+    \+ member(holding(_), StateIn),
     select(hands(dirty), StateIn, hands(clean), StateOut).
 
 % dress for work
@@ -62,12 +64,14 @@ action(StateIn, StateOut, 'Dress for work~n'-[]) :-
 % wash hands in the kitchen
 action(StateIn, StateOut, 'Wash hands~n'-[]) :-
     member(player_in(kitchen), StateIn),
+    \+ member(holding(_), StateIn),
     select(hands(dirty), StateIn, hands(clean), StateOut).
 
 % eat
 action(StateIn, StateOut, 'Eat~n'-[]) :-
     member(player_in(kitchen), StateIn),
     member(hands(clean), StateIn),
+    \+ member(holding(_), StateIn),
     select(stomach(empty), StateIn, stomach(full), StateOut).
 
 % grab object
