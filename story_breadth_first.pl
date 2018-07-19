@@ -110,7 +110,8 @@ action(StateIn, StateOut, 'Drop ~w~n'-[Object]) :-
 go :-
     init(State),
     !,
-    process_queue([State], [], StateOut),
+    ord_empty(ClosedSet),
+    process_queue([State], ClosedSet, StateOut),
     !,
     memberchk(history(H), StateOut),
     print_history(H).
@@ -123,24 +124,24 @@ process_queue([HeadState|_], _, StateOut) :-
     done(HeadState),
     !,
     log(HeadState, 'Done!~n'-[], StateOut).
-process_queue([HeadState|TailStates], ClosedList, StateOut) :-
+process_queue([HeadState|TailStates], ClosedSet, StateOut) :-
     length(TailStates, OpenLen),
-    length(ClosedList, ClosedLen),
+    length(ClosedSet, ClosedLen),
     debug(planner(process_queue), 'open ~w closed ~w', [OpenLen, ClosedLen]),
-    findall(S, take_action(HeadState, ClosedList, S), States),
+    findall(S, take_action(HeadState, ClosedSet, S), States),
     append(TailStates, States, Queue),
-    close_state(ClosedList, HeadState, ClosedList0),
+    close_state(ClosedSet, HeadState, ClosedList0),
     process_queue(Queue, ClosedList0, StateOut).
 
 % take an action; check its outcome against the closed list; and add its description to the history
-take_action(StateIn, ClosedList, StateOut) :-
+take_action(StateIn, ClosedSet, StateOut) :-
     action(StateIn, S0, Description),
     delete(S0, history(_), S1),
     list_to_ord_set(S1, S2),
-    \+ member(S2, ClosedList),
+    \+ ord_memberchk(S2, ClosedSet),
     log(S0, Description, StateOut).
 
-close_state(ClosedListIn, State, ClosedListOut) :-
+close_state(ClosedSetIn, State, ClosedSetOut) :-
     delete(State, history(_), State0),
     list_to_ord_set(State0, OrdSet),
-    append(ClosedListIn, [OrdSet], ClosedListOut).
+    ord_add_element(ClosedSetIn, OrdSet, ClosedSetOut).
