@@ -136,9 +136,11 @@ process_queue([HeadState|TailStates], ClosedList, StateOut) :-
 take_action(StateIn, ClosedList, StateOut) :-
     action(StateIn, S0, Description),
     delete(S0, history(_), S1),
-    \+ member(S1, ClosedList),
+    list_to_ord_set(S1, S2),
+    \+ member(S2, ClosedList),
     log(S0, Description, StateOut).
-    
+
 close_state(ClosedListIn, State, ClosedListOut) :-
     delete(State, history(_), State0),
-    append(ClosedListIn, [State0], ClosedListOut).
+    list_to_ord_set(State0, OrdSet),
+    append(ClosedListIn, [OrdSet], ClosedListOut).
