@@ -64,6 +64,7 @@ action(StateIn, StateOut, 'Wash hands~n'-[]) :-
 % dress for work
 action(StateIn, StateOut, 'Dress for work~n'-[]) :-
     member(player_in(closet), StateIn),
+    \+ member(holding(_), StateIn),
     select(dressed_for(bed), StateIn, dressed_for(work), StateOut).
 
 % wash hands in the kitchen
