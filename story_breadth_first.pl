@@ -58,7 +58,7 @@ action(StateIn, StateOut, 'Pee~n'-[]) :-
 
 % wash hands in the bathroom
 action(StateIn, StateOut, 'Wash hands~n'-[]) :-
-    member(bathroom(_), StateIn),
+    member(player_in(bathroom(_)), StateIn),
     select(hands(dirty), StateIn, hands(clean), StateOut).
 
 % dress for work
