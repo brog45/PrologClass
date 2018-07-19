@@ -124,6 +124,9 @@ process_queue([HeadState|_], _, StateOut) :-
     !,
     log(HeadState, 'Done!~n'-[], StateOut).
 process_queue([HeadState|TailStates], ClosedList, StateOut) :-
+    length(TailStates, OpenLen),
+    length(ClosedList, ClosedLen),
+    debug(planner(process_queue), 'open ~w closed ~w', [OpenLen, ClosedLen]),
     findall(S, take_action(HeadState, ClosedList, S), States),
     append(TailStates, States, Queue),
     close_state(ClosedList, HeadState, ClosedList0),
