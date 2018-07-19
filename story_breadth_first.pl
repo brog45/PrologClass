@@ -7,7 +7,7 @@ init(State) :-
             , hands(dirty)
             , dressed_for(bed)
             , object_in(keys, kitchen)
-            , goal(player_in(kitchen))
+            , goal(player_in(car))
             , goal(stomach(full))
             , goal(bladder(empty))
             , goal(holding(keys))
@@ -19,8 +19,12 @@ done(State) :-
     findall(G, member(goal(G), State), Goals),
     intersection(Goals, State, Goals).
 
+door(yard, car).
+door(den, yard).
 door(den, kitchen).
-door(bedroom, den).
+door(hall, den).
+door(hall, bathroom(guest)).
+door(bedroom, hall).
 door(bedroom, bathroom(master)).
 door(bathroom(master), closet).
 
@@ -52,12 +56,17 @@ action(StateIn, StateOut, 'Pee~n'-[]) :-
     select(bladder(full), StateIn, bladder(empty), State0),
     select(hands(_), State0, hands(dirty), StateOut).
 
+% wash hands in the bathroom
+action(StateIn, StateOut, 'Wash hands~n'-[]) :-
+    member(bathroom(_), StateIn),
+    select(hands(dirty), StateIn, hands(clean), StateOut).
+
 % dress for work
 action(StateIn, StateOut, 'Dress for work~n'-[]) :-
     member(player_in(closet), StateIn),
     select(dressed_for(bed), StateIn, dressed_for(work), StateOut).
 
-% wash hands
+% wash hands in the kitchen
 action(StateIn, StateOut, 'Wash hands~n'-[]) :-
     member(player_in(kitchen), StateIn),
     select(hands(dirty), StateIn, hands(clean), StateOut).
