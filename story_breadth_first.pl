@@ -42,14 +42,6 @@ print_history([Format-Values|Tail]) :-
     format(Format, Values),
     print_history(Tail).
 
-% limit story length to avoid infinite recursion
-action(State, _, _) :-
-    member(history(History), State),
-    length(History, N),
-    N > 15,
-    !,
-    fail.
-
 % pee
 action(StateIn, StateOut, 'Pee~n'-[]) :-
     member(player_in(bathroom(_)), StateIn),
