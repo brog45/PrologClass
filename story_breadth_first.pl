@@ -44,10 +44,15 @@ take_action(StateIn, ClosedSet, StateOut) :-
     % action/1 is not defined inside this module and should be defined in the story data
     action(Action, ActionDict),
     action_is_applicable(ActionDict, StateIn),
-    outcome(Action, OutcomeDict),
+    random_outcome(Action, OutcomeDict),
     apply_outcome(StateIn, OutcomeDict, S0),
     state_not_closed(S0, ClosedSet),
     log(S0, OutcomeDict.description, StateOut).
+
+random_outcome(Action, OutcomeDict) :-
+    findall(O, outcome(Action, O), Os),
+    random_permutation(Os, ShuffledOutcomes),
+    ShuffledOutcomes = [OutcomeDict|_].
 
 action_is_applicable(ActionDict, State) :-
     subtract(State, ActionDict.negprereqs, State),
