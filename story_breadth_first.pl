@@ -116,18 +116,16 @@ go :-
     memberchk(history(H), StateOut),
     print_history(H).
 
-% process_queue(L, _) :-
-%     length(L, N),
-%     format('Queue depth ~d~n', N),
-%     fail.
+process_queue(OpenList, ClosedSet, _) :-
+    length(OpenList, OpenLen),
+    length(ClosedSet, ClosedLen),
+    debug(planner(process_queue), 'open ~w closed ~w', [OpenLen, ClosedLen]),
+    fail.
 process_queue([HeadState|_], _, StateOut) :-
     done(HeadState),
     !,
     log(HeadState, 'Done!~n'-[], StateOut).
 process_queue([HeadState|TailStates], ClosedSet, StateOut) :-
-    length(TailStates, OpenLen),
-    length(ClosedSet, ClosedLen),
-    debug(planner(process_queue), 'open ~w closed ~w', [OpenLen, ClosedLen]),
     findall(S, take_action(HeadState, ClosedSet, S), States),
     append(TailStates, States, Queue),
     close_state(ClosedSet, HeadState, ClosedList0),
