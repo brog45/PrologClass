@@ -42,7 +42,7 @@ process_queue([HeadState|TailStates], ClosedSet, StateOut) :-
 % take an action; check its outcome against the closed list; and add its description to the history
 take_action(StateIn, ClosedSet, StateOut) :-
     % action/1 is not defined inside this module and should be defined in the story data
-    action(ActionDict),
+    action(_, ActionDict),
     apply_action(StateIn, ActionDict, S0),
     state_not_closed(S0, ClosedSet),
     log(S0, ActionDict.description, StateOut).

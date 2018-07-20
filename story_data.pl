@@ -1,6 +1,6 @@
 % story data
 
-:- module(story_data,[init/1, action/1]).
+:- module(story_data,[init/1, action/2]).
 
 %! init(-State:story_state)
 init(State) :-
@@ -33,7 +33,7 @@ connected_to(A,B) :- door(A,B).
 connected_to(A,B) :- door(B,A).
 
 % pee
-action(action{
+action(pee, action{
         prereqs: [player_in(bathroom(_)), bladder(full)],
         negprereqs: [holding(_)],
         removes: [hands(_), bladder(full)],
@@ -42,7 +42,7 @@ action(action{
     }).
 
 % wash hands in the bathroom
-action(action{
+action(wash_hands, action{
         prereqs: [player_in(bathroom(_)), hands(dirty)],
         negprereqs: [holding(_)],
         removes: [hands(dirty)],
@@ -51,7 +51,7 @@ action(action{
     }).
 
 % dress for work
-action(action{
+action(dress, action{
         prereqs: [player_in(closet)],
         negprereqs: [holding(_)],
         removes: [dressed_for(bed)],
@@ -60,7 +60,7 @@ action(action{
     }).
 
 % wash hands in the kitchen
-action(action{
+action(wash_hands, action{
         prereqs: [player_in(kitchen), hands(dirty)],
         negprereqs: [holding(_)],
         removes: [hands(dirty)],
@@ -69,7 +69,7 @@ action(action{
     }).
 
 % eat
-action(action{
+action(eat, action{
         prereqs: [player_in(kitchen), hands(clean), stomach(empty)],
         negprereqs: [holding(_)],
         removes: [stomach(empty)],
@@ -78,7 +78,7 @@ action(action{
     }).
 
 % grab object
-action(action{
+action(grab(Object), action{
         prereqs: [player_in(Location), object_in(Object, Location)],
         negprereqs: [holding(_)],
         removes: [object_in(Object, Location)],
@@ -87,7 +87,7 @@ action(action{
     }).
 
 % move from room to room
-action(action{
+action(move(CurrentLocation, Location), action{
         prereqs: [player_in(CurrentLocation)],
         negprereqs: [],
         removes: [player_in(CurrentLocation)],
@@ -97,7 +97,7 @@ action(action{
     connected_to(CurrentLocation, Location).
 
 % drop object
-action(action{
+action(drop(Object), action{
         prereqs: [player_in(Location), holding(Object)],
         negprereqs: [],
         removes: [holding(Object)],
