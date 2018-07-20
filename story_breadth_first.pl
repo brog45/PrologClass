@@ -76,15 +76,6 @@ action(StateIn, StateOut, 'Eat~n'-[]) :-
     \+ member(holding(_), StateIn),
     select(stomach(empty), StateIn, stomach(full), StateOut).
 
-
-% % This is faster than the data-driven approach below
-% % grab object
-% action(StateIn, StateOut, 'Grab ~w~n'-[Object]) :-
-%     member(player_in(Location), StateIn),
-%     \+ member(holding(_), StateIn),
-%     select(object_in(Object, Location), StateIn, holding(Object), StateOut).
-
-
 % grab object
 action(StateIn, StateOut, 'Grab ~w~n'-[Object]) :-
     PreReqs = [player_in(Location), object_in(Object, Location)],
