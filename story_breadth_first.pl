@@ -147,9 +147,7 @@ process_queue([HeadState|TailStates], ClosedSet, StateOut) :-
 take_action(StateIn, ClosedSet, StateOut) :-
     action(ActionDict),
     apply_action(StateIn, ActionDict, S0),
-    delete(S0, history(_), S1),
-    list_to_ord_set(S1, S2),
-    \+ ord_memberchk(S2, ClosedSet),
+    state_not_closed(S0, ClosedSet),
     log(S0, ActionDict.description, StateOut).
 
 apply_action(StateIn, ActionDict, StateOut) :-
@@ -157,6 +155,11 @@ apply_action(StateIn, ActionDict, StateOut) :-
     intersection(ActionDict.prereqs, StateIn, ActionDict.prereqs),
     subtract(StateIn, ActionDict.removes, S0),
     append(S0, ActionDict.adds, StateOut).
+
+state_not_closed(State, ClosedSet) :-
+    delete(State, history(_), S1),
+    list_to_ord_set(S1, S2),
+    \+ ord_memberchk(S2, ClosedSet).
 
 close_state(ClosedSetIn, State, ClosedSetOut) :-
     delete(State, history(_), State0),
