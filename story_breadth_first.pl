@@ -119,17 +119,6 @@ action(action{
 
 
 
-action(StateIn, StateOut, Description) :-
-    action(ActionDict), 
-    apply_action(StateIn, ActionDict, StateOut),
-    Description = ActionDict.description.
-
-apply_action(StateIn, ActionDict, StateOut) :-
-    subtract(StateIn, ActionDict.negprereqs, StateIn),
-    intersection(ActionDict.prereqs, StateIn, ActionDict.prereqs),
-    subtract(StateIn, ActionDict.removes, S0),
-    append(S0, ActionDict.adds, StateOut).
-
 go :-
     init(State),
     !,
@@ -156,11 +145,18 @@ process_queue([HeadState|TailStates], ClosedSet, StateOut) :-
 
 % take an action; check its outcome against the closed list; and add its description to the history
 take_action(StateIn, ClosedSet, StateOut) :-
-    action(StateIn, S0, Description),
+    action(ActionDict),
+    apply_action(StateIn, ActionDict, S0),
     delete(S0, history(_), S1),
     list_to_ord_set(S1, S2),
     \+ ord_memberchk(S2, ClosedSet),
-    log(S0, Description, StateOut).
+    log(S0, ActionDict.description, StateOut).
+
+apply_action(StateIn, ActionDict, StateOut) :-
+    subtract(StateIn, ActionDict.negprereqs, StateIn),
+    intersection(ActionDict.prereqs, StateIn, ActionDict.prereqs),
+    subtract(StateIn, ActionDict.removes, S0),
+    append(S0, ActionDict.adds, StateOut).
 
 close_state(ClosedSetIn, State, ClosedSetOut) :-
     delete(State, history(_), State0),
