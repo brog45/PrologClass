@@ -45,58 +45,90 @@ print_history([Format-Values|Tail]) :-
     print_history(Tail).
 
 % pee
-action(StateIn, StateOut, 'Pee~n'-[]) :-
-    member(player_in(bathroom(_)), StateIn),
-    select(bladder(full), StateIn, bladder(empty), State0),
-    \+ member(holding(_), StateIn),
-    select(hands(_), State0, hands(dirty), StateOut).
+action(action{
+        prereqs: [player_in(bathroom(_)), bladder(full)],
+        negprereqs: [holding(_)],
+        removes: [hands(_), bladder(full)],
+        adds: [hands(dirty), bladder(empty)],
+        description: 'Pee~n'-[]
+    }).
 
 % wash hands in the bathroom
-action(StateIn, StateOut, 'Wash hands~n'-[]) :-
-    member(player_in(bathroom(_)), StateIn),
-    \+ member(holding(_), StateIn),
-    select(hands(dirty), StateIn, hands(clean), StateOut).
+action(action{
+        prereqs: [player_in(bathroom(_)), hands(dirty)],
+        negprereqs: [holding(_)],
+        removes: [hands(dirty)],
+        adds: [hands(clean)],
+        description: 'Wash hands~n'-[]
+    }).
 
 % dress for work
-action(StateIn, StateOut, 'Dress for work~n'-[]) :-
-    member(player_in(closet), StateIn),
-    \+ member(holding(_), StateIn),
-    select(dressed_for(bed), StateIn, dressed_for(work), StateOut).
+action(action{
+        prereqs: [player_in(closet)],
+        negprereqs: [holding(_)],
+        removes: [dressed_for(bed)],
+        adds: [dressed_for(work)],
+        description: 'Dress for work~n'-[]
+    }).
 
 % wash hands in the kitchen
-action(StateIn, StateOut, 'Wash hands~n'-[]) :-
-    member(player_in(kitchen), StateIn),
-    \+ member(holding(_), StateIn),
-    select(hands(dirty), StateIn, hands(clean), StateOut).
+action(action{
+        prereqs: [player_in(kitchen), hands(dirty)],
+        negprereqs: [holding(_)],
+        removes: [hands(dirty)],
+        adds: [hands(clean)],
+        description: 'Wash hands~n'-[]
+    }).
 
 % eat
-action(StateIn, StateOut, 'Eat~n'-[]) :-
-    member(player_in(kitchen), StateIn),
-    member(hands(clean), StateIn),
-    \+ member(holding(_), StateIn),
-    select(stomach(empty), StateIn, stomach(full), StateOut).
+action(action{
+        prereqs: [player_in(kitchen), hands(clean), stomach(empty)],
+        negprereqs: [holding(_)],
+        removes: [stomach(empty)],
+        adds: [stomach(full)],
+        description: 'Eat~n'-[]
+    }).
 
 % grab object
-action(StateIn, StateOut, 'Grab ~w~n'-[Object]) :-
-    PreReqs = [player_in(Location), object_in(Object, Location)],
-    NegPreReqs = [holding(_)],
-    Removes = [object_in(Object, Location)],
-    Adds = [holding(Object)],
-    subtract(StateIn, NegPreReqs, StateIn),
-    intersection(PreReqs, StateIn, PreReqs),
-    subtract(StateIn, Removes, S0),
-    append(S0, Adds, StateOut).
+action(action{
+        prereqs: [player_in(Location), object_in(Object, Location)],
+        negprereqs: [holding(_)],
+        removes: [object_in(Object, Location)],
+        adds: [holding(Object)],
+        description: 'Grab ~w~n'-[Object]
+    }).
 
 % move from room to room
-action(StateIn, StateOut, 'Move from ~w to ~w~n'-[CurrentLocation, Location]) :-
-    member(player_in(CurrentLocation), StateIn),
-    connected_to(CurrentLocation, Location),
-    select(player_in(CurrentLocation), StateIn, player_in(Location), StateOut).
+action(action{
+        prereqs: [player_in(CurrentLocation)],
+        negprereqs: [],
+        removes: [player_in(CurrentLocation)],
+        adds: [player_in(Location)],
+        description: 'Move from ~w to ~w~n'-[CurrentLocation, Location]
+    }) :-
+    connected_to(CurrentLocation, Location).
 
 % drop object
-action(StateIn, StateOut, 'Drop ~w~n'-[Object]) :-
-    member(player_in(Location), StateIn),
-    select(holding(Object), StateIn, object_in(Object, Location), StateOut).
+action(action{
+        prereqs: [player_in(Location), holding(Object)],
+        negprereqs: [],
+        removes: [holding(Object)],
+        adds: [object_in(Object, Location)],
+        description: 'Drop ~w~n'-[Object]
+    }).
+
+
+
+action(StateIn, StateOut, Description) :-
+    action(Dict), 
+    apply_action(StateIn, Dict, StateOut),
+    Description = Dict.description.
+
+apply_action(StateIn, Dict, StateOut) :-
+    subtract(StateIn, Dict.negprereqs, StateIn),
+    intersection(Dict.prereqs, StateIn, Dict.prereqs),
+    subtract(StateIn, Dict.removes, S0),
+    append(S0, Dict.adds, StateOut).
 
 go :-
     init(State),
