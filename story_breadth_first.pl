@@ -120,15 +120,15 @@ action(action{
 
 
 action(StateIn, StateOut, Description) :-
-    action(Dict), 
-    apply_action(StateIn, Dict, StateOut),
-    Description = Dict.description.
+    action(ActionDict), 
+    apply_action(StateIn, ActionDict, StateOut),
+    Description = ActionDict.description.
 
-apply_action(StateIn, Dict, StateOut) :-
-    subtract(StateIn, Dict.negprereqs, StateIn),
-    intersection(Dict.prereqs, StateIn, Dict.prereqs),
-    subtract(StateIn, Dict.removes, S0),
-    append(S0, Dict.adds, StateOut).
+apply_action(StateIn, ActionDict, StateOut) :-
+    subtract(StateIn, ActionDict.negprereqs, StateIn),
+    intersection(ActionDict.prereqs, StateIn, ActionDict.prereqs),
+    subtract(StateIn, ActionDict.removes, S0),
+    append(S0, ActionDict.adds, StateOut).
 
 go :-
     init(State),
