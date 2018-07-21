@@ -42,20 +42,16 @@ process_queue([HeadState|TailStates], ClosedSet, StateOut) :-
 % take an action; check its outcome against the closed list; and add its description to the history
 take_action(StateIn, ClosedSet, StateOut) :-
     % action/1 is not defined inside this module and should be defined in the story data
-    action(Action, ActionDict),
-    action_is_applicable(ActionDict, StateIn),
-    outcome(Action, OutcomeDict),
-    apply_outcome(StateIn, OutcomeDict, S0),
+    action(_, ActionDict),
+    apply_action(StateIn, ActionDict, S0),
     state_not_closed(S0, ClosedSet),
-    log(S0, OutcomeDict.description, StateOut).
+    log(S0, ActionDict.description, StateOut).
 
-action_is_applicable(ActionDict, State) :-
-    subtract(State, ActionDict.negprereqs, State),
-    intersection(ActionDict.prereqs, State, ActionDict.prereqs).
-
-apply_outcome(StateIn, OutcomeDict, StateOut) :-
-    subtract(StateIn, OutcomeDict.removes, S0),
-    append(S0, OutcomeDict.adds, StateOut).
+apply_action(StateIn, ActionDict, StateOut) :-
+    subtract(StateIn, ActionDict.negprereqs, StateIn),
+    intersection(ActionDict.prereqs, StateIn, ActionDict.prereqs),
+    subtract(StateIn, ActionDict.removes, S0),
+    append(S0, ActionDict.adds, StateOut).
 
 state_not_closed(State, ClosedSet) :-
     delete(State, history(_), S1),
