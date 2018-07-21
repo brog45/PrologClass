@@ -3,21 +3,6 @@
 :- module(story_breadth_first,[go/1]).
 :- use_module(story_data).
 
-done(State) :-
-    findall(G, member(goal(G), State), Goals),
-    intersection(Goals, State, Goals).
-
-% add a message to the history
-log(State, Format-Values, State0) :-
-    member(history(History), State),
-    append(History, [Format-Values], History0),
-    select(history(History), State, history(History0), State0).
-
-print_history([]).
-print_history([Format-Values|Tail]) :-
-    format(Format, Values),
-    print_history(Tail).
-
 go(InitialState) :-
     ord_empty(ClosedSet),
     process_queue([InitialState], ClosedSet, StateOut),
@@ -39,6 +24,21 @@ process_queue([HeadState|TailStates], ClosedSet, StateOut) :-
     append(TailStates, States, Queue),
     close_state(ClosedSet, HeadState, ClosedList0),
     process_queue(Queue, ClosedList0, StateOut).
+
+print_history([]).
+print_history([Format-Values|Tail]) :-
+    format(Format, Values),
+    print_history(Tail).
+
+done(State) :-
+    findall(G, member(goal(G), State), Goals),
+    intersection(Goals, State, Goals).
+
+% add a message to the history
+log(State, Format-Values, State0) :-
+    member(history(History), State),
+    append(History, [Format-Values], History0),
+    select(history(History), State, history(History0), State0).
 
 % take an action; check its outcome against the closed list; and add its description to the history
 take_action(StateIn, ClosedSet, StateOut) :-
