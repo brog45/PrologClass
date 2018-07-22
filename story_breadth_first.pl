@@ -33,7 +33,7 @@ done(State) :-
     findall(G, member(goal(G), State), Goals),
     intersection(Goals, State, Goals).
 
-% take an action; check its outcome against the closed list; and add its description to the history
+% take an action; check its outcome against the closed list; and add its action term to the plan
 take_action(NodeIn, ClosedSet, NodeOut) :-
     % action/1 is defined in the story data
     action(ActionStep, ActionDict),
@@ -50,11 +50,9 @@ apply_action(StateIn, ActionDict, StateOut) :-
     append(S0, ActionDict.adds, StateOut).
 
 state_not_closed(State, ClosedSet) :-
-    delete(State, history(_), S1),
-    list_to_ord_set(S1, S2),
-    \+ ord_memberchk(S2, ClosedSet).
+    list_to_ord_set(State, StateOrdSet),
+    \+ ord_memberchk(StateOrdSet, ClosedSet).
 
 close_state(ClosedSetIn, State, ClosedSetOut) :-
-    delete(State, history(_), State0),
-    list_to_ord_set(State0, OrdSet),
-    ord_add_element(ClosedSetIn, OrdSet, ClosedSetOut).
+    list_to_ord_set(State, StateOrdSet),
+    ord_add_element(ClosedSetIn, StateOrdSet, ClosedSetOut).

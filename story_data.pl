@@ -17,7 +17,6 @@ init(State) :-
             , goal(bladder(empty))
             , goal(holding(keys))
             , goal(dressed_for(work))
-            , history([])
             ].
 
 % door(yard, car).
