@@ -50,7 +50,7 @@ action(wash_hands, action{
     }).
 
 % dress for work
-action(dress, action{
+action(dress(work), action{
         prereqs: [player_in(closet)],
         negprereqs: [holding(_)],
         removes: [dressed_for(bed)],
