@@ -1,52 +1,47 @@
 % breadth-first version, avoids infinite recursion
 
-:- module(story_breadth_first,[go/1]).
+:- module(story_breadth_first,[calculate_plan/2]).
 :- use_module(story_data).
 
-go(InitialState) :-
+calculate_plan(InitialState, Plan) :-
     ord_empty(ClosedSet),
-    process_queue([InitialState], ClosedSet, StateOut),
+    state_plan_node(InitialState, [], Node),
+    process_queue([Node], ClosedSet, NodeOut),
     !,
-    memberchk(history(H), StateOut),
-    print_history(H).
+    Plan = NodeOut.plan.
+
+state_plan_node(State, Plan, node{ state:State, plan:Plan }).
 
 process_queue(OpenList, ClosedSet, _) :-
+    % this clause just writes to the debug monitor
     length(OpenList, OpenLen),
     length(ClosedSet, ClosedLen),
     debug(planner(process_queue), 'open ~w closed ~w', [OpenLen, ClosedLen]),
     fail.
-process_queue([HeadState|_], _, StateOut) :-
+process_queue([HeadNode|_], _, HeadNode) :-
+    state_plan_node(HeadState, _, HeadNode),
     done(HeadState),
-    !,
-    log(HeadState, 'Done!~n'-[], StateOut).
-process_queue([HeadState|TailStates], ClosedSet, StateOut) :-
-    findall(S, take_action(HeadState, ClosedSet, S), States),
-    append(TailStates, States, Queue),
+    !.
+process_queue([HeadNode|TailNodes], ClosedSet, NodeOut) :-
+    findall(Node, take_action(HeadNode, ClosedSet, Node), OutcomeNodes),
+    append(TailNodes, OutcomeNodes, Queue),
+    state_plan_node(HeadState, _, HeadNode),
     close_state(ClosedSet, HeadState, ClosedList0),
-    process_queue(Queue, ClosedList0, StateOut).
-
-print_history([]).
-print_history([Format-Values|Tail]) :-
-    format(Format, Values),
-    print_history(Tail).
+    process_queue(Queue, ClosedList0, NodeOut).
 
 done(State) :-
     findall(G, member(goal(G), State), Goals),
     intersection(Goals, State, Goals).
 
-% add a message to the history
-log(State, Format-Values, State0) :-
-    member(history(History), State),
-    append(History, [Format-Values], History0),
-    select(history(History), State, history(History0), State0).
-
 % take an action; check its outcome against the closed list; and add its description to the history
-take_action(StateIn, ClosedSet, StateOut) :-
+take_action(NodeIn, ClosedSet, NodeOut) :-
     % action/1 is defined in the story data
-    action(_, ActionDict),
-    apply_action(StateIn, ActionDict, S0),
-    state_not_closed(S0, ClosedSet),
-    log(S0, ActionDict.description, StateOut).
+    action(ActionStep, ActionDict),
+    state_plan_node(StateIn, PlanIn, NodeIn),
+    apply_action(StateIn, ActionDict, StateOut),
+    state_not_closed(StateOut, ClosedSet),
+    append(PlanIn, [ActionStep], PlanOut),
+    state_plan_node(StateOut, PlanOut, NodeOut).
 
 apply_action(StateIn, ActionDict, StateOut) :-
     subtract(StateIn, ActionDict.negprereqs, StateIn),
