@@ -36,8 +36,7 @@ action(pee, action{
         prereqs: [player_in(bathroom(_)), bladder(full)],
         negprereqs: [holding(_)],
         removes: [hands(_), bladder(full)],
-        adds: [hands(dirty), bladder(empty)],
-        description: 'Pee~n'-[]
+        adds: [hands(dirty), bladder(empty)]
     }).
 
 % wash hands in the bathroom
@@ -45,8 +44,7 @@ action(wash_hands, action{
         prereqs: [player_in(bathroom(_)), hands(dirty)],
         negprereqs: [holding(_)],
         removes: [hands(dirty)],
-        adds: [hands(clean)],
-        description: 'Wash hands~n'-[]
+        adds: [hands(clean)]
     }).
 
 % dress for work
@@ -54,8 +52,7 @@ action(dress(work), action{
         prereqs: [player_in(closet)],
         negprereqs: [holding(_)],
         removes: [dressed_for(bed)],
-        adds: [dressed_for(work)],
-        description: 'Dress for work~n'-[]
+        adds: [dressed_for(work)]
     }).
 
 % wash hands in the kitchen
@@ -63,8 +60,7 @@ action(wash_hands, action{
         prereqs: [player_in(kitchen), hands(dirty)],
         negprereqs: [holding(_)],
         removes: [hands(dirty)],
-        adds: [hands(clean)],
-        description: 'Wash hands~n'-[]
+        adds: [hands(clean)]
     }).
 
 % eat
@@ -72,8 +68,7 @@ action(eat, action{
         prereqs: [player_in(kitchen), hands(clean), stomach(empty)],
         negprereqs: [holding(_)],
         removes: [stomach(empty)],
-        adds: [stomach(full)],
-        description: 'Eat~n'-[]
+        adds: [stomach(full)]
     }).
 
 % grab object
@@ -81,8 +76,7 @@ action(grab(Object), action{
         prereqs: [player_in(Location), object_in(Object, Location)],
         negprereqs: [holding(_)],
         removes: [object_in(Object, Location)],
-        adds: [holding(Object)],
-        description: 'Grab ~w~n'-[Object]
+        adds: [holding(Object)]
     }).
 
 % move from room to room
@@ -90,8 +84,7 @@ action(move(CurrentLocation, Location), action{
         prereqs: [player_in(CurrentLocation)],
         negprereqs: [],
         removes: [player_in(CurrentLocation)],
-        adds: [player_in(Location)],
-        description: 'Move from ~w to ~w~n'-[CurrentLocation, Location]
+        adds: [player_in(Location)]
     }) :-
     connected_to(CurrentLocation, Location).
 
@@ -100,6 +93,5 @@ action(drop(Object), action{
         prereqs: [player_in(Location), holding(Object)],
         negprereqs: [],
         removes: [holding(Object)],
-        adds: [object_in(Object, Location)],
-        description: 'Drop ~w~n'-[Object]
+        adds: [object_in(Object, Location)]
     }).
