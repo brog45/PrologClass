@@ -36,11 +36,11 @@ done(State) :-
 % take an action; check its outcome against the closed list; and add its action term to the plan
 take_action(NodeIn, ClosedSet, NodeOut) :-
     % action/1 is defined in the story data
-    action(ActionStep, ActionDict),
+    action(ActionDict),
     state_plan_node(StateIn, PlanIn, NodeIn),
     apply_action(StateIn, ActionDict, StateOut),
     state_not_closed(StateOut, ClosedSet),
-    append(PlanIn, [ActionStep], PlanOut),
+    append(PlanIn, ActionDict.description, PlanOut),
     state_plan_node(StateOut, PlanOut, NodeOut).
 
 apply_action(StateIn, ActionDict, StateOut) :-
