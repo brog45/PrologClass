@@ -1,6 +1,6 @@
 % story data
 
-:- module(story_data,[init/1, action/1]).
+:- module(story_data,[init/1, action/2]).
 
 %! init(-State:story_state)
 init(State) :-
@@ -32,74 +32,74 @@ connected_to(A,B) :- door(A,B).
 connected_to(A,B) :- door(B,A).
 
 % pee
-action(action{
+action(pee, action{
         prereqs: [player_in(bathroom(_)), bladder(full)],
         negprereqs: [holding(_)],
         removes: [hands(_), bladder(full)],
         adds: [hands(dirty), bladder(empty)],
-        description: [pee]
+        description: 'Pee~n'-[]
     }).
 
 % wash hands in the bathroom
-action(action{
+action(wash_hands, action{
         prereqs: [player_in(bathroom(_)), hands(dirty)],
         negprereqs: [holding(_)],
         removes: [hands(dirty)],
         adds: [hands(clean)],
-        description: [wash_hands]
+        description: 'Wash hands~n'-[]
     }).
 
 % dress for work
-action(action{
+action(dress(work), action{
         prereqs: [player_in(closet)],
         negprereqs: [holding(_)],
         removes: [dressed_for(bed)],
         adds: [dressed_for(work)],
-        description: [dress(work)]
+        description: 'Dress for work~n'-[]
     }).
 
 % wash hands in the kitchen
-action(action{
+action(wash_hands, action{
         prereqs: [player_in(kitchen), hands(dirty)],
         negprereqs: [holding(_)],
         removes: [hands(dirty)],
         adds: [hands(clean)],
-        description: [wash_hands]
+        description: 'Wash hands~n'-[]
     }).
 
 % eat
-action(action{
+action(eat, action{
         prereqs: [player_in(kitchen), hands(clean), stomach(empty)],
         negprereqs: [holding(_)],
         removes: [stomach(empty)],
         adds: [stomach(full)],
-        description: [eat]
+        description: 'Eat~n'-[]
     }).
 
 % grab object
-action(action{
+action(grab(Object), action{
         prereqs: [player_in(Location), object_in(Object, Location)],
         negprereqs: [holding(_)],
         removes: [object_in(Object, Location)],
         adds: [holding(Object)],
-        description: [grab(Object)]
+        description: 'Grab ~w~n'-[Object]
     }).
 
 % move from room to room
-action(action{
+action(move(CurrentLocation, Location), action{
         prereqs: [player_in(CurrentLocation)],
         negprereqs: [],
         removes: [player_in(CurrentLocation)],
         adds: [player_in(Location)],
-        description: [move(CurrentLocation, Location)]
+        description: 'Move from ~w to ~w~n'-[CurrentLocation, Location]
     }) :-
     connected_to(CurrentLocation, Location).
 
 % drop object
-action(action{
+action(drop(Object), action{
         prereqs: [player_in(Location), holding(Object)],
         negprereqs: [],
         removes: [holding(Object)],
         adds: [object_in(Object, Location)],
-        description: [drop(Object)]
+        description: 'Drop ~w~n'-[Object]
     }).
