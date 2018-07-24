@@ -1,6 +1,6 @@
 % story data
 
-:- module(story_data,[init/1, action/2]).
+:- module(story_data,[init/1, action/2, event/4]).
 
 %! init(-State:story_state)
 init(State) :-
@@ -30,6 +30,8 @@ door(bathroom(master), closet).
 
 connected_to(A,B) :- door(A,B).
 connected_to(A,B) :- door(B,A).
+
+:- discontiguous action/2, event/4.
 
 % pee
 action(pee, action{
@@ -69,6 +71,13 @@ action(eat, action{
         negprereqs: [holding(_)],
         removes: [stomach(empty)],
         adds: [stomach(full)]
+    }).
+
+event(eat, 0.5, spill, action{
+        prereqs: [],
+        negprereqs: [],
+        removes: [dressed_for(work)],
+        adds: []
     }).
 
 % grab object

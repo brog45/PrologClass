@@ -1,6 +1,6 @@
 % breadth-first version, avoids infinite recursion
 
-:- module(planner,[calculate_plan/2]).
+:- module(planner,[calculate_plan/2, apply_action/3]).
 :- use_module(story_data).
 
 calculate_plan(InitialState, Plan) :-

@@ -10,6 +10,7 @@ step(pee) --> "Use the restroom.".
 step(wash_hands) --> "Wash your hands!".
 step(dress(For)) --> "Dress for ", atom(For), ".".
 step(eat) --> "Om nom nom.".
+step(spill) --> "Oh no! You spilled food on your shirt!".
 step(grab(Object)) --> "Pick up the ", atom(Object), ".".
 step(move(A,B)) --> "Walk from the ", atom(A), " to the ", atom(B), ".".
 step(drop(Object)) --> "Put down the ", atom(Object), ".".
