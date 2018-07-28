@@ -1,7 +1,7 @@
 :- use_module(planner).
 :- use_module(story_data).
 :- use_module(story_dcg).
-:- use_module(executor).
+:- use_module(story_generator).
 
 go :-
     init(State),
