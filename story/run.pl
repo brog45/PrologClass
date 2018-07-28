@@ -1,6 +1,6 @@
 :- use_module(planner).
 :- use_module(story_data).
-:- use_module(story_dcg).
+:- use_module(story_dcg_text).
 :- use_module(story_generator).
 
 go :-
