@@ -1,6 +1,10 @@
-:- module(executor,[apply_plan/4]).
+:- module(executor,[generate_story/2]).
 :- use_module(story_data).
 :- use_module(planner).
+
+generate_story(StateIn, StoryOut) :-
+    calculate_plan(StateIn, Plan),
+    apply_plan(StateIn, Plan, _, StoryOut).
 
 apply_plan(State, [], State, []).
 apply_plan(StateIn, [Action|_], StateOut, [Event|TailOut]) :-
