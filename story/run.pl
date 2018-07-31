@@ -21,7 +21,10 @@ home_page(_Request) :-
                     ).
 
 story_page(_Request) :-
-    init(State),
+    Name = 'Brian',
+    Pet = 'Murray',
+    Animal = 'cat',
+    init(Name, Pet, Animal, State),
     generate_story(State, Story),
     phrase(story(Story), StoryHtml),
     !,

@@ -1,10 +1,12 @@
 % story data
 
-:- module(story_data,[init/1, action/2, event/4]).
+:- module(story_data,[init/4, action/2, event/4]).
 
-%! init(-State:story_state)
-init(State) :-
+%! init(+Name:atom, +Pet:atom, +Animal:atom, -State:story_state)
+init(Name, Pet, Animal, State) :-
     State = [ player_in(bedroom)
+            , player(Name)
+            , pet(Pet, Animal)
             , stomach(empty)
             , bladder(full)
             , hands(clean)
@@ -31,6 +33,8 @@ door(bathroom(master), closet).
 connected_to(A,B) :- door(A,B).
 connected_to(A,B) :- door(B,A).
 
+% I think grouping each action with its corresponding 
+% events makes this easier to read.
 :- discontiguous action/2, event/4.
 
 % pee

@@ -4,7 +4,10 @@
 :- use_module(story_generator).
 
 go :-
-    init(State),
+    Name = 'Brian',
+    Pet = 'Murray',
+    Animal = 'cat',
+    init(Name, Pet, Animal, State),
     generate_story(State, Story),
     phrase(story(Story), StoryCodes),
     !,
