@@ -7,6 +7,7 @@
 :- use_module(library(http/http_dispatch)).
 :- use_module(library(http/http_error)).
 :- use_module(library(http/html_write)).
+:- use_module(library(http/http_parameters)).
 
 :- http_handler(/, home_page, []).
 :- http_handler('/story', story_page, []).
@@ -20,10 +21,12 @@ home_page(_Request) :-
                     ]
                     ).
 
-story_page(_Request) :-
-    Name = 'Brian',
-    Pet = 'Murray',
-    Animal = 'cat',
+story_page(Request) :-
+    http_parameters(Request,
+        [   name(Name, [default('Brian')])
+        ,   pet(Pet, [default('Murray')])
+        ,   animal(Animal, [default('cat')])
+        ]),
     init(Name, Pet, Animal, State),
     generate_story(State, Story),
     phrase(story(Story), StoryHtml),
