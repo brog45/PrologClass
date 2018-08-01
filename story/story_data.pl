@@ -95,11 +95,18 @@ action(grab(Object), action{
 % move from room to room
 action(move(CurrentLocation, Location), action{
         prereqs: [player_in(CurrentLocation)],
-        negprereqs: [],
+        negprereqs: [needy_pet],
         removes: [player_in(CurrentLocation)],
         adds: [player_in(Location)]
     }) :-
     connected_to(CurrentLocation, Location).
+
+event(move(_, _), 0.1, needy_pet(Name, Animal), action{
+        prereqs: [pet(Name, Animal)],
+        negprereqs: [],
+        removes: [],
+        adds: [needy_pet]
+    }).
 
 % drop object
 action(drop(Object), action{
@@ -107,4 +114,12 @@ action(drop(Object), action{
         negprereqs: [],
         removes: [holding(Object)],
         adds: [object_in(Object, Location)]
+    }).
+
+% love pet
+action(love_pet(Name,Animal), action{
+        prereqs: [needy_pet, pet(Name, Animal)],
+        negprereqs: [],
+        removes: [needy_pet, hands(clean)],
+        adds: [hands(dirty)]
     }).

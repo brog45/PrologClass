@@ -14,3 +14,5 @@ step(spill) --> "Oh no! You spilled food on your shirt!".
 step(grab(Object)) --> "Pick up the ", atom(Object), ".".
 step(move(A,B)) --> "Walk from the ", atom(A), " to the ", atom(B), ".".
 step(drop(Object)) --> "Put down the ", atom(Object), ".".
+step(needy_pet(Name, Animal)) --> atom(Name), " the ", atom(Animal), " demands love.".
+step(love_pet(Name, _Animal)) --> "You pet ", atom(Name), " for a moment. ".

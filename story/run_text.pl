@@ -9,6 +9,7 @@ go :-
     Animal = 'cat',
     init(Name, Pet, Animal, State),
     generate_story(State, Story),
+    writeln(Story),
     phrase(story(Story), StoryCodes),
     !,
     string_codes(StoryString, StoryCodes),
