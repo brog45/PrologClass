@@ -15,6 +15,18 @@
 home_page(_Request) :-
     reply_html_page([title('Story Generator')],
                     [   h1('Story Generator')
+                    ,   form([ method(get), action(story) ],
+                             [ div(label([ 'Name of Character: '
+                                         , input([ type(text), name(name), required ])
+                                         ]))
+                             , div(label([ 'Name of Pet: '
+                                         , input([ type(text), name(pet), required ])
+                                         ]))
+                             , div(label([ 'Type of Animal: '
+                                         , input([ type(text), name(animal), required ])
+                                         ]))
+                             , input([ type(submit) ])
+                             ])
                     ,   p([ a(href('/story'), 'Click here')
                           , ' to generate a story.'
                           ])
@@ -23,9 +35,9 @@ home_page(_Request) :-
 
 story_page(Request) :-
     http_parameters(Request,
-        [   name(Name, [default('Brian')])
-        ,   pet(Pet, [default('Murray')])
-        ,   animal(Animal, [default('cat')])
+        [   name(Name,      [optional, default('Brian')])
+        ,   pet(Pet,        [optional, default('Murray')])
+        ,   animal(Animal,  [optional, default('cat')])
         ]),
     init(Name, Pet, Animal, State),
     generate_story(State, Story),
