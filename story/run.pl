@@ -23,7 +23,12 @@ home_page(_Request) :-
                                          , input([type=text, name=pet, required])
                                          ]))
                              , div(label([ 'Type of Animal: '
-                                         , input([type=text, name=animal, required])
+                                         , select([name=animal, required],
+                                                  [ option([])
+                                                  , option(bunny)
+                                                  , option(kitty)
+                                                  , option(puppy)
+                                                  ])
                                          ]))
                              , input([ type=submit ])
                              ])
