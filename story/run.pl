@@ -15,19 +15,19 @@
 home_page(_Request) :-
     reply_html_page([title('Story Generator')],
                     [   h1('Story Generator')
-                    ,   form([ method(get), action(story) ],
+                    ,   form([ method=get, action=story ],
                              [ div(label([ 'Name of Character: '
-                                         , input([ type(text), name(name), required ])
+                                         , input([type=text, name=name, required])
                                          ]))
                              , div(label([ 'Name of Pet: '
-                                         , input([ type(text), name(pet), required ])
+                                         , input([type=text, name=pet, required])
                                          ]))
                              , div(label([ 'Type of Animal: '
-                                         , input([ type(text), name(animal), required ])
+                                         , input([type=text, name=animal, required])
                                          ]))
-                             , input([ type(submit) ])
+                             , input([ type=submit ])
                              ])
-                    ,   p([ a(href('/story'), 'Click here')
+                    ,   p([ a(href='/story', 'Click here')
                           , ' to generate a story.'
                           ])
                     ]
@@ -45,7 +45,7 @@ story_page(Request) :-
     !,
     reply_html_page([title('A Story')], 
                     [  h1('A Story')
-                    ,  div([class(story)], StoryHtml)
+                    ,  div([class=story], StoryHtml)
                     ]).
 
 go :-
