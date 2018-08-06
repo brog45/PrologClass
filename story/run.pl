@@ -61,8 +61,10 @@ reply_story(player(Name), pet(Pet, Animal)) :-
     phrase(story(Story), StoryHtml),
     !,
     reply_html_page([title('A Story')], 
-                    [  h1('A Story')
-                    ,  div([class=story], StoryHtml)
+                    [   h1('A Story')
+                    ,   div([class=story], StoryHtml)
+                    ,   button([onclick='javascript:document.location.reload()'], 
+                               ['Generate another story'])
                     ]).
     
 session_data(player(Name), pet(Pet, Animal)) :-
