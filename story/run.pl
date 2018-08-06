@@ -52,7 +52,7 @@ settings_handler(Request) :-
 story_page(Request) :-
     (   session_data(player(Name), pet(Pet, Animal))
     ->  reply_story(player(Name), pet(Pet, Animal))
-    ;   http_redirect(moved_temporary, story, Request)
+    ;   http_redirect(moved_temporary, /, Request)
     ).
 
 reply_story(player(Name), pet(Pet, Animal)) :-
