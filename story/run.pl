@@ -66,7 +66,7 @@ reply_story(player(Name), pet(Pet, Animal)) :-
                     ,   button([onclick='javascript:document.location.reload()'], 
                                ['Generate another story'])
                     ]).
-    
+
 session_data(player(Name), pet(Pet, Animal)) :-
     http_session_data(player(Name)),
     http_session_data(pet(Pet, Animal)).
