@@ -8,14 +8,16 @@
 :- use_module(library(http/http_error)).
 :- use_module(library(http/html_write)).
 :- use_module(library(http/http_parameters)).
+:- use_module(library(http/http_session)).
 
 :- http_handler(/, home_page, []).
+:- http_handler('/settings', settings_handler, []).
 :- http_handler('/story', story_page, []).
 
 home_page(_Request) :-
     reply_html_page([title('Story Generator')],
                     [   h1('Story Generator')
-                    ,   form([ method=post, action=story ],
+                    ,   form([ method=post, action=settings ],
                              [ div(label([ 'Name of Character: '
                                          , input([type=text, name=name, required])
                                          ]))
@@ -35,12 +37,25 @@ home_page(_Request) :-
                     ]
                     ).
 
-story_page(Request) :-
+settings_handler(Request) :-
     http_parameters(Request,
         [   name(Name,      [form_data])
         ,   pet(Pet,        [form_data])
         ,   animal(Animal,  [form_data])
         ]),
+    http_session_retractall(player(_)),
+    http_session_retractall(pet(_,_)),
+    http_session_assert(player(Name)),
+    http_session_assert(pet(Pet, Animal)),
+    http_redirect(moved_temporary, story, Request).
+
+story_page(Request) :-
+    (   session_data(player(Name), pet(Pet, Animal))
+    ->  reply_story(player(Name), pet(Pet, Animal))
+    ;   http_redirect(moved_temporary, story, Request)
+    ).
+
+reply_story(player(Name), pet(Pet, Animal)) :-
     init(Name, Pet, Animal, State),
     generate_story(State, Story),
     phrase(story(Story), StoryHtml),
@@ -49,6 +64,10 @@ story_page(Request) :-
                     [  h1('A Story')
                     ,  div([class=story], StoryHtml)
                     ]).
+    
+session_data(player(Name), pet(Pet, Animal)) :-
+    http_session_data(player(Name)),
+    http_session_data(pet(Pet, Animal)).
 
 go :-
     Port = 8080,
