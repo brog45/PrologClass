@@ -19,7 +19,6 @@ apply_plan(State, [Action|T], [Action|TailOut]) :-
     apply_plan(NewState, T, TailOut).
 
 choose_event(Action, Event, ActionDict) :-
-    random(Luck), !,
     event(Action, Probability, Event, ActionDict),
-    Probability >= Luck,
+    !, maybe(Probability),
     debug(executor(choose_event), 'Replacing ~w with ~w', [Action, Event]).
