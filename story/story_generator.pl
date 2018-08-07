@@ -20,5 +20,5 @@ apply_plan(State, [Action|T], [Action|TailOut]) :-
 
 choose_event(Action, Event, ActionDict) :-
     event(Action, Probability, Event, ActionDict),
-    !, maybe(Probability),
+    maybe(Probability), !,
     debug(executor(choose_event), 'Replacing ~w with ~w', [Action, Event]).
