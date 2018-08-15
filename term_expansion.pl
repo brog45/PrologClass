@@ -55,9 +55,3 @@ goal_expansion(crufty_code(_,_), _) :-
 
 % A warning about the line below is printed when this file is consulted.
 blah :- crufty_code(a,b).
-
-% After manually fixing a bunch of these, you realize the extra argument has 
-% the same name all the way through a module. Change your setup so if it runs 
-% into a directive :-extra_crufty_arg('X') it adds the variable X. Notice 
-% you'll have to use goal_expansion/4 instead of goal_expansion/2 to get the 
-% variable name.
