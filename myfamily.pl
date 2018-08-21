@@ -1,3 +1,27 @@
+:- module(myfamily,[
+            descendant_of/2,
+            ancestor_of/2,
+            second_cousins_once_removed/2,
+            second_cousins/2,
+            great_grandparent_of/2,
+            first_cousins_once_removed/2,
+            first_cousins/2,
+            grandparent_of/2,
+            sister_of/2,
+            brother_of/2,
+            uncle_of/2,
+            aunt_of/2,
+            siblings/2,
+            daughter_of/2,
+            son_of/2,
+            child_of/2,
+            father_of/2,
+            mother_of/2,
+            parent_of/2,
+            parents/3,
+            female/1,
+            male/1]).
+
 /*
 # Family Tree Exercise
 */
