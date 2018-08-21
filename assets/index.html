@@ -1,0 +1,32 @@
+<html lang="en">
+    <head>
+        <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+        <script src="/f/pengines.js"></script>
+        <script>
+            var pengine = new Pengine({
+                oncreate: handleCreate,
+                onprompt: handlePrompt,
+                onoutput: handleOutput,
+                onsuccess: handleSuccess
+            });
+            function handleCreate() {
+                pengine.ask('male(X)', {chunk:100});
+            }
+            function handlePrompt() {
+                pengine.input(prompt(this.data));
+            }
+            function handleOutput() {
+                console.log(this.data);
+            }
+            function handleSuccess() {
+                console.log(this.data);
+                if (this.more) {
+                    pengine.next();
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div id="out"></div>
+    </body>
+</html>
