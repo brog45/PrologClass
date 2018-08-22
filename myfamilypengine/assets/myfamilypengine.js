@@ -1,3 +1,8 @@
+$(function () {
+    // set the default query
+    $("#query").val("grandparent_of(Grandparent, Grandchild), male(Grandchild)");
+});
+
 $(document).on("click", "#queryButton", function(event) {
     const query = $('#query').val();
     const queryText = `?- ${query}.`;
