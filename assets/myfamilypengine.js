@@ -4,11 +4,10 @@ $(document).on("click", "#queryButton", function(event) {
     console.log(queryText);
     $("#out").text("");
     $('<div></div>').text(queryText).appendTo("#out");
-    const pengine = createPengine(query);
-    // pengine.ask(query, {chunk:10});
+    runQuery(query);
 });
 
-function createPengine(query) {
+function runQuery(query) {
     const pengine = new Pengine({
         oncreate: function () {
             console.log("Created");
@@ -44,5 +43,4 @@ function createPengine(query) {
             }
         }
     });
-    return pengine;
 }
