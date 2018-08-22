@@ -14,10 +14,9 @@ http:location(files, '/f', []).
 
 :- use_module(library(pengines)).
 :- use_module(pengine_sandbox:myfamily).
-:- use_module(myfamily).
 
+% :- use_module(library(sandbox)).
 % :- multifile sandbox:safe_primitive/1.
-%
 % sandbox:safe_primitive(myfamily:male(_)).
 % sandbox:safe_primitive(myfamily:female(_)).
 
