@@ -24,4 +24,4 @@ http:location(files, '/f', []).
 server(Port) :-
     http_server(http_dispatch, [port(Port)]).
 
-:- initialization server(3000).
+:- initialization server(8080).
