@@ -16,10 +16,12 @@ http:location(files, '/f', []).
 :- use_module(pengine_sandbox:myfamily).
 :- use_module(myfamily).
 
-:- multifile sandbox:safe_primitive/1.
-
-sandbox:safe_primitive(myfamily:male(_)).
-sandbox:safe_primitive(myfamily:female(_)).
+% :- multifile sandbox:safe_primitive/1.
+%
+% sandbox:safe_primitive(myfamily:male(_)).
+% sandbox:safe_primitive(myfamily:female(_)).
 
 server(Port) :-
     http_server(http_dispatch, [port(Port)]).
+
+:- initialization server(3000).

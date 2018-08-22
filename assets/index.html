@@ -2,31 +2,27 @@
     <head>
         <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
         <script src="/f/pengines.js"></script>
-        <script>
-            var pengine = new Pengine({
-                oncreate: handleCreate,
-                onprompt: handlePrompt,
-                onoutput: handleOutput,
-                onsuccess: handleSuccess
-            });
-            function handleCreate() {
-                pengine.ask('male(X)', {chunk:100});
-            }
-            function handlePrompt() {
-                pengine.input(prompt(this.data));
-            }
-            function handleOutput() {
-                console.log(this.data);
-            }
-            function handleSuccess() {
-                console.log(this.data);
-                if (this.more) {
-                    pengine.next();
-                }
-            }
-        </script>
+        <script src="/f/myfamilypengine.js"></script>
+        <style>
+           .vel + .vel::before {content: ", "} 
+           .rslt + .rslt::before {content: "; "} 
+           input[type=text] {width: 30em}
+        </style>
     </head>
     <body>
-        <div id="out"></div>
+        <div>
+            <h2>Query</h2>
+            <div>
+                <label>
+                    Query:
+                    <input type="text" id="query" required vaue="male(X)" />
+                </label>
+            </div>
+            <button id="queryButton">Run Query</button>
+        </div>
+        <div>
+            <h2>Output</h2>
+            <div id="out"></div>
+        </div>
     </body>
 </html>
